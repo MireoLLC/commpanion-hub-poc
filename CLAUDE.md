@@ -47,6 +47,12 @@ commpanion-hub-poc/
 ├─ executive-health.html    (Program detail — Gold accent)
 ├─ organizations.html       (For employers)
 ├─ contact.html             (Contact + FAQ)
+├─ insights.html            (Insights landing — card grid + filters)
+├─ insights-care-team.html          (Article 1 — Our approach)
+├─ insights-first-visit.html        (Article 2 — Getting started · Coral)
+├─ insights-stop-guessing.html      (Article 3 — Campaigns · Teal)
+├─ insights-beyond-physical.html    (Article 4 — Our approach · Gold)
+├─ insights-healthier-teams.html    (Article 5 — For organizations)
 ├─ css/
 │  └─ styles.css            (one shared stylesheet for all pages)
 ├─ js/
@@ -106,13 +112,13 @@ Global rules for every page: shared sticky header (reverse logo on navy) + foote
 
 ### Global header / nav (identical on every page)
 - Left: COMMpanion logo (reverse) + "Powered by Penn State Health."
-- Nav (sentence case, active page highlighted): Home · About · **Programs ▾** (dropdown: Primary Care, Weight Management, Executive Health, All programs) · For organizations · Contact
+- Nav (sentence case, active page highlighted): Home · About · **Programs ▾** (dropdown: Primary Care, Weight Management, Executive Health, All programs) · Insights · For organizations · Contact
 - Right: primary button **"Get started"** → contact.html
 - Mobile: hamburger; Programs becomes an expandable group.
 
 ### Global footer (identical on every page, --ink)
 - Reverse logo + "Powered by Penn State Health."
-- Columns: Programs (the 3 internal pages + the 3 live sites), Company (About, For organizations, Contact), Legal (Privacy → https://www.pennstatehealth.org/privacy-legal-notices · Non-Discrimination → https://www.pennstatehealth.org/non-discrimination).
+- Columns: Programs (the 3 internal pages + the 3 live sites), Company (About, Insights, For organizations, Contact), Legal (Privacy → https://www.pennstatehealth.org/privacy-legal-notices · Non-Discrimination → https://www.pennstatehealth.org/non-discrimination).
 - Phones: 833-PSH-CMPN (Primary Care & Weight Management); 1-833-774-5395 (Executive Health).
 - `© Penn State Health` + current year.
 
@@ -198,6 +204,112 @@ Each page: breadcrumb (Home / Programs / [Name]); **program hero** in navy with 
 
 ---
 
+### 5.7 insights.html — Insights (blogs & campaigns)
+- Breadcrumb: Home / Insights
+- **Hero (navy, slim):** eyebrow "Insights"; H1 **"Ideas, stories, and care that travels."** subhead **"Perspectives, guides, and campaigns from across the COMMpanion programs."**
+- **Category filter chips** (JS-filtered, no reload): All · Our approach · Getting started · Campaigns · For organizations. "All" active by default.
+- **Card grid** (responsive 3-up → 1-up): one card per article — image (from `image_assets/`), category tag chip, title, excerpt (the share-preview text below), and "Read more →" to the article page. Cards carry a `data-category` for filtering. Program-specific cards may use that program's accent on the category chip (Coral / Teal / Gold); brand-level cards use COMMpanion Blue.
+
+Cards (in this order):
+1. **A care team in your corner: the idea behind COMMpanion** — Our approach — → insights-care-team.html — excerpt: "Healthcare works better when someone knows you. The thinking behind COMMpanion, Penn State Health's family of virtual care programs."
+2. **What your first COMMpanion video visit is really like** — Getting started (Coral) — → insights-first-visit.html — excerpt: "Wondering what virtual primary care actually feels like? A walk-through of your first visit with COMMpanion Primary Care."
+3. **Stop guessing. Start getting answers.** — Campaigns (Teal) — → insights-stop-guessing.html — excerpt: "Skip the guesswork. See what medically guided weight care looks like with COMMpanion Weight Management."
+4. **Beyond the annual physical: whole-person care for busy leaders** — Our approach (Gold) — → insights-beyond-physical.html — excerpt: "A physical is a snapshot. Real executive health is a year-round plan."
+5. **Healthier teams, fewer missed days** — For organizations — → insights-healthier-teams.html — excerpt: "Offering great care shouldn't be complicated. How COMMpanion helps organizations keep their people healthier — and more present."
+
+### 5.8 Article template (all five article pages share this layout)
+- Breadcrumb: Home / Insights / [Title]
+- **Article header:** category eyebrow (in the article's accent where program-specific), H1 title, a meta line "By the COMMpanion team · [N] min read" (no fabricated author names or dates).
+- **Lead image:** full-width hero image from `image_assets/`, meaningful `alt`.
+- **Share bar** (see §5.9) directly under the header, and again at the foot of the article.
+- **Body:** the multi-section copy in §5.10, using H2 subheads. Comfortable reading measure (max ~70ch), Roboto body 16/26.
+- **Closing CTA box** (accent-tinted): the article's call to action + button (per §5.10).
+- **"More insights":** 2–3 cards linking to other articles + a link back to insights.html.
+- Per-article `<head>`: unique title, description (= excerpt), and Open Graph/Twitter tags (see §5.9).
+
+### 5.9 Share bar (reusable component)
+- Buttons: **LinkedIn · Facebook · X · Copy link** (Lucide icons, brand style, sentence-case labels).
+- Build share URLs at runtime from the page's own `window.location.href` (and document title), so they work once deployed:
+  - LinkedIn: `https://www.linkedin.com/sharing/share-offsite/?url=ENCODED_URL`
+  - Facebook: `https://www.facebook.com/sharer/sharer.php?u=ENCODED_URL`
+  - X: `https://twitter.com/intent/tweet?url=ENCODED_URL&text=ENCODED_TITLE`
+  - Copy link: copy `location.href` to clipboard via the Clipboard API, show a brief "Copied!" confirmation.
+- Share buttons open in a new tab (`rel="noopener"`). No SDKs, no tracking scripts.
+- **Per-article Open Graph + Twitter Card tags** in `<head>`: `og:title`, `og:description` (the excerpt), `og:image` (absolute URL to the article's image), `og:type=article`, `og:url`, `twitter:card=summary_large_image`. Add `JSON-LD` `Article`/`BlogPosting` per article.
+- **Note (put in README):** social platforms can only generate real preview cards from a publicly reachable URL — they cannot read `localhost`. Test the buttons by sharing the live public URL once deployed.
+
+### 5.10 Article copy (use verbatim)
+
+**Article 1 — insights-care-team.html · Our approach · brand (navy/blue)**
+H1: **A care team in your corner: the idea behind COMMpanion**
+Read time: 3 min
+> Most of us know the feeling of explaining our health history from scratch to someone we've never met — and may never see again. Care that should feel personal ends up feeling like a series of disconnected transactions. COMMpanion was built on a different premise: good care starts with someone who actually knows you.
+## Care built on relationship, not transactions
+At the center of every COMMpanion program is a dedicated care team — providers, nurses, and health navigators who follow your story over time. You can reach them by message or phone, not only at a once-a-year appointment. The goal isn't to replace the human relationship at the heart of medicine with technology; it's to make that relationship easier to keep up with in a busy life.
+## One idea, three programs
+COMMpanion isn't a single clinic — it's a family of virtual care programs, each shaped for a different need. Primary Care brings everyday, relationship-based care into a convenient virtual setting. Weight Management offers medically guided, specialist-led support for lasting weight health. Executive Health takes a concierge, whole-person approach for busy professionals. Different programs, one standard of care.
+## Virtual-first, but never impersonal
+Virtual-first doesn't mean hands-off. It means meeting you where you are — at home, at work, on your schedule — while keeping the continuity that makes care effective. Your plan is built around your history and goals, and it adjusts as life changes.
+## Powered by Penn State Health
+Behind every COMMpanion program is the clinical expertise of Penn State Health — the convenience of virtual care without trading away the standards you'd expect from an academic health system.
+CTA: **Explore the COMMpanion programs** → programs.html
+
+**Article 2 — insights-first-visit.html · Getting started · Primary Care (Coral)**
+H1: **What your first COMMpanion video visit is really like**
+Read time: 4 min
+> If you've never had a primary care visit over video, a little skepticism is fair. Can a screen really stand in for the exam room? With COMMpanion Primary Care, the honest answer is that for a great deal of everyday primary care, it not only works — it's often easier. Here's what to expect.
+## Before your visit
+You schedule a time that fits your day and share a bit about what's going on. There's no waiting room and no arriving early to fill out forms on a clipboard. You connect from wherever you're comfortable — home, office, or anywhere private.
+## During the visit
+You meet your primary care provider over video — the same provider you build a relationship with over time, not whoever happens to be free. They take time to understand your history, talk through your concerns, and start a plan that's yours. It's a conversation, not a conveyor belt.
+## Between visits
+This is where virtual-first care shines. A question after the visit? Message your care team. Need a refill or a referral to a specialist? Your team handles the navigation. You're not on your own until the next appointment — support is ongoing.
+## When you need care now
+COMMpanion Primary Care includes urgent care visits Monday through Friday, so a sudden issue doesn't have to mean a crowded clinic. And when something genuinely needs in-person attention, your team helps coordinate the next step instead of leaving you to figure it out.
+CTA: **See what Primary Care includes** → primary-care.html (secondary: visit the full site, https://www.commpanion.health/)
+
+**Article 3 — insights-stop-guessing.html · Campaigns · Weight Management (Teal)**
+H1: **Stop guessing. Start getting answers.**
+Read time: 4 min
+> There has never been more noise around weight loss — trendy diets, online "programs," and compounded medications sold with big promises and little oversight. It's easy to spend a lot of time, money, and hope on guesswork. COMMpanion Weight Management is built on the opposite approach: real answers, from real specialists.
+## The trouble with guessing
+Fad diets and unregulated products treat weight as a simple willpower problem. But weight health is medical, and it's individual. Without an actual evaluation, you're guessing — and guessing tends to mean cycles of short-term results and long-term frustration.
+## What medically guided care looks like
+COMMpanion Weight Management starts with board-certified obesity medicine specialists who look at your full picture — history, health, and goals — and build a treatment plan around you. It's care, not a product you order and hope works.
+## Medication, when it's right — and never compounded
+When medication is appropriate, your specialist may prescribe an FDA-approved GLP-1 medication — never a compounded version. That distinction matters: a treatment with a clear safety and regulatory standard behind it, prescribed and monitored by a clinician who knows your case.
+## Coaching that makes it stick
+Medication and visits are only part of the picture. The program includes months of one-on-one coaching with a dietitian or nurse, because lasting change comes from support that continues between appointments.
+CTA: **Learn about Weight Management** → weight-management.html (secondary: visit the full site, https://www.weightloss.commpanion.health/)
+
+**Article 4 — insights-beyond-physical.html · Our approach · Executive Health (Gold)**
+H1: **Beyond the annual physical: whole-person care for busy leaders**
+Read time: 3 min
+> Busy leaders tend to optimize everything — calendars, teams, performance — except, often, their own health. The annual physical gets booked (sometimes), checked off, and forgotten until next year. COMMpanion Executive Health is built on the idea that health deserves the same year-round attention as anything else that matters.
+## The physical is the starting line, not the finish
+A comprehensive annual physical is where it begins — a thorough look at where you are today. But a single snapshot can't capture a year of stress, travel, sleep, and demands. The physical becomes the foundation for a tailored plan, not the whole plan itself.
+## Whole-person, not just lab values
+Real health is more than bloodwork. COMMpanion Executive Health spans the dimensions that actually shape how you feel and perform: medical care, nutrition, physical fitness, mental health support, and stress reduction and mindfulness. A view of the whole person, not just a chart.
+## Care that fits a packed calendar
+The program is designed around how busy professionals actually live. Care can come to you — in-clinic, at home, at the worksite, or by telemedicine — so staying well doesn't require clearing your schedule. Your physician and care team stay connected throughout the year.
+CTA: **Explore Executive Health** → executive-health.html (secondary: visit the full site, https://executive.commpanion.health/)
+
+**Article 5 — insights-healthier-teams.html · For organizations · brand (navy/blue)**
+H1: **Healthier teams, fewer missed days**
+Read time: 4 min
+> Every benefits leader knows the gap between offering a health benefit and getting people to actually use it. Coverage that's hard to access doesn't move the needle on a workforce's health. COMMpanion is built to close that gap — convenient virtual care people will actually use, backed by a name they trust.
+## Access is the whole game
+The best care is the care that gets used. By making primary care, weight management, and executive health available virtually — on an employee's schedule, without the friction of waiting rooms and weeks-long waits — COMMpanion turns a benefit on paper into care in practice.
+## One partner, three programs
+Rather than stitching together separate point solutions, organizations get one partner across the needs of a real workforce: everyday primary care, medically guided weight health, and concierge executive care for leadership. One relationship, one standard of care.
+## Backed by Penn State Health
+COMMpanion is Powered by Penn State Health — the clinical credibility of a leading academic health system, delivered in a modern, convenient way. A benefit employees recognize and trust.
+## How partnership works
+Getting started is straightforward: we learn about your organization, recommend the right mix of programs, onboard your people, and stay engaged with ongoing support.
+CTA: **Talk to our team about COMMpanion for organizations** → organizations.html
+
+---
+
 ## 6. Interactions (`js/main.js`, shared across pages)
 
 - Mobile hamburger nav with the Programs group expandable (accessible: `aria-expanded`, Esc to close).
@@ -207,6 +319,8 @@ Each page: breadcrumb (Home / Programs / [Name]); **program hero** in navy with 
 - Header shadow/shrink after scroll.
 - Section scroll-reveal (IntersectionObserver), gentle, staggered.
 - FAQ accordion (contact page): single-open or multi-open, `aria-expanded`, keyboard operable.
+- Insights landing: category-chip filtering of the card grid (show/hide by `data-category`, no reload; "All" resets). Active chip styled.
+- Share bar (article pages): build LinkedIn/Facebook/X URLs from `window.location.href` + title at click time; "Copy link" uses the Clipboard API with a brief "Copied!" confirmation.
 - Comparison table → stacks to cards on mobile (CSS).
 - **All motion gated behind `prefers-reduced-motion: no-preference`.** Pages fully readable/navigable with JS disabled.
 - No console errors.

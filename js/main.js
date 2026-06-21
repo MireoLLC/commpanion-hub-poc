@@ -125,10 +125,13 @@
   });
 
   // -------------------------------------------------------
-  // Active-page highlight in nav
+  // Active-page highlight in nav.
+  // Top-level links and dropdown items match by href; a dropdown
+  // trigger lights up whenever the current page is one of its
+  // menu items (so "About" lights up on care-team.html, "Programs"
+  // lights up on the three program detail pages).
   // -------------------------------------------------------
   const path = window.location.pathname.split('/').pop() || 'index.html';
-  const programPages = new Set(['primary-care.html', 'weight-management.html', 'executive-health.html', 'programs.html']);
 
   document.querySelectorAll('.primary-nav a[href]').forEach(a => {
     const href = a.getAttribute('href');
@@ -138,11 +141,13 @@
       a.setAttribute('aria-current', 'page');
     }
   });
-  // Mark "Programs ▾" as current when on any program-related page
-  if (programPages.has(path)) {
-    const progTrigger = document.querySelector('.has-dropdown .nav-trigger');
-    if (progTrigger) progTrigger.classList.add('is-current');
-  }
+  document.querySelectorAll('.has-dropdown').forEach(group => {
+    const trigger = group.querySelector('.nav-trigger');
+    if (!trigger) return;
+    if (group.querySelector(`.nav-dropdown a[href="${path}"]`)) {
+      trigger.classList.add('is-current');
+    }
+  });
 
   // -------------------------------------------------------
   // Smooth scroll for in-page anchors with header offset
@@ -192,6 +197,137 @@
     btn.addEventListener('click', () => {
       const expanded = btn.getAttribute('aria-expanded') === 'true';
       btn.setAttribute('aria-expanded', String(!expanded));
+    });
+  });
+
+  // -------------------------------------------------------
+  // Insights: category chip filter (no reload)
+  // -------------------------------------------------------
+  const chipBar = document.querySelector('[data-filter-chips]');
+  const insightsGrid = document.querySelector('[data-insights-grid]');
+  const emptyState = document.querySelector('[data-filter-empty]');
+
+  if (chipBar && insightsGrid) {
+    const chips = chipBar.querySelectorAll('.filter-chip');
+    const cards = insightsGrid.querySelectorAll('[data-category]');
+
+    const applyFilter = (cat) => {
+      let visible = 0;
+      cards.forEach(card => {
+        const cardCat = card.getAttribute('data-category');
+        const match = cat === 'all' || cardCat === cat;
+        card.hidden = !match;
+        if (match) visible++;
+      });
+      if (emptyState) emptyState.classList.toggle('is-on', visible === 0);
+    };
+
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => {
+          c.classList.toggle('is-active', c === chip);
+          c.setAttribute('aria-pressed', String(c === chip));
+        });
+        applyFilter(chip.getAttribute('data-filter') || 'all');
+      });
+    });
+  }
+
+  // -------------------------------------------------------
+  // Share bar (article pages)
+  // -------------------------------------------------------
+  const shareBars = document.querySelectorAll('[data-share-bar]');
+
+  const flashToast = (toast) => {
+    if (!toast) return;
+    toast.classList.add('is-on');
+    window.setTimeout(() => toast.classList.remove('is-on'), 1800);
+  };
+
+  // -------------------------------------------------------
+  // Care team: click-to-expand card + program filter
+  // -------------------------------------------------------
+  document.querySelectorAll('[data-team-card]').forEach(card => {
+    const toggle = () => {
+      const expanded = card.getAttribute('aria-expanded') === 'true';
+      card.setAttribute('aria-expanded', String(!expanded));
+    };
+    card.addEventListener('click', (e) => {
+      // Don't toggle when a real link inside the expanded content was clicked
+      if (e.target.closest('a')) return;
+      toggle();
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggle();
+      }
+    });
+  });
+
+  const teamChips = document.querySelector('[data-team-chips]');
+  const teamGrid = document.querySelector('[data-team-grid]');
+  if (teamChips && teamGrid) {
+    const chips = teamChips.querySelectorAll('.filter-chip');
+    const cards = teamGrid.querySelectorAll('[data-program]');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        const target = chip.getAttribute('data-filter') || 'all';
+        chips.forEach(c => {
+          c.classList.toggle('is-active', c === chip);
+          c.setAttribute('aria-pressed', String(c === chip));
+        });
+        cards.forEach(card => {
+          const prog = card.getAttribute('data-program');
+          // Cross-program cards (data-program="all") show on every filter
+          const show = target === 'all' || prog === target || prog === 'all';
+          card.hidden = !show;
+          if (!show && card.getAttribute('aria-expanded') === 'true') {
+            card.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    });
+  }
+
+  shareBars.forEach(bar => {
+    const toast = bar.querySelector('[data-copy-toast]');
+
+    bar.querySelectorAll('[data-share]').forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        const kind = btn.getAttribute('data-share');
+        const url = window.location.href;
+        const title = document.title;
+
+        // Copy link uses Clipboard API; rest open share endpoints in new tab
+        if (kind === 'copy') {
+          e.preventDefault();
+          try {
+            await navigator.clipboard.writeText(url);
+            flashToast(toast);
+          } catch (err) {
+            // Fallback: select-and-copy via temporary input
+            const tmp = document.createElement('input');
+            tmp.value = url;
+            document.body.appendChild(tmp);
+            tmp.select();
+            try { document.execCommand('copy'); flashToast(toast); }
+            catch (_) { /* swallow — UI already gives the URL via the address bar */ }
+            tmp.remove();
+          }
+          return;
+        }
+
+        let target;
+        const u = encodeURIComponent(url);
+        const t = encodeURIComponent(title);
+        if (kind === 'linkedin') target = `https://www.linkedin.com/sharing/share-offsite/?url=${u}`;
+        else if (kind === 'facebook') target = `https://www.facebook.com/sharer/sharer.php?u=${u}`;
+        else if (kind === 'x') target = `https://twitter.com/intent/tweet?url=${u}&text=${t}`;
+        if (!target) return;
+        e.preventDefault();
+        window.open(target, '_blank', 'noopener,noreferrer');
+      });
     });
   });
 

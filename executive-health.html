@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
 <title>COMMpanion Executive Health | Personalized care for your busy lifestyle</title>
 <meta name="description" content="COMMpanion Executive Health from Penn State Health — a concierge approach anchored by a comprehensive annual physical, extending across nutrition, fitness, mental health, and more.">
 <meta name="theme-color" content="#1B365D">
@@ -58,7 +59,16 @@
     <nav class="primary-nav" id="primaryNav" aria-label="Primary">
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="about.html">About</a></li>
+        <li class="has-dropdown">
+          <button class="nav-trigger" type="button">
+            About
+            <svg class="caret" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <ul class="nav-dropdown">
+            <li><a href="about.html">About COMMpanion<span class="dd-sub">The idea behind COMMpanion</span></a></li>
+            <li><a href="care-team.html">Care team<span class="dd-sub">Meet the people behind the care</span></a></li>
+          </ul>
+        </li>
         <li class="has-dropdown">
           <button class="nav-trigger" type="button">
             Programs
@@ -72,6 +82,7 @@
             <li><a href="programs.html">All programs</a></li>
           </ul>
         </li>
+        <li><a href="insights.html">Insights</a></li>
         <li><a href="organizations.html">For organizations</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
@@ -232,17 +243,21 @@
         <li><a href="primary-care.html">Primary Care</a></li>
         <li><a href="weight-management.html">Weight Management</a></li>
         <li><a href="executive-health.html">Executive Health</a></li>
-        <li><a href="https://www.commpanion.health/" target="_blank" rel="noopener">commpanion.health &rarr;</a></li>
-        <li><a href="https://www.weightloss.commpanion.health/" target="_blank" rel="noopener">weightloss.commpanion.health &rarr;</a></li>
-        <li><a href="https://executive.commpanion.health/" target="_blank" rel="noopener">executive.commpanion.health &rarr;</a></li>
       </ul>
     </nav>
     <nav class="footer-nav" aria-label="Company">
       <h2 class="footer-heading">Company</h2>
       <ul>
         <li><a href="about.html">About</a></li>
+        <li><a href="care-team.html">Care team</a></li>
+        <li><a href="insights.html">Insights</a></li>
         <li><a href="organizations.html">For organizations</a></li>
         <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+    <nav class="footer-nav" aria-label="Legal">
+      <h2 class="footer-heading">Legal</h2>
+      <ul>
         <li><a href="https://www.pennstatehealth.org/privacy-legal-notices" target="_blank" rel="noopener">Privacy</a></li>
         <li><a href="https://www.pennstatehealth.org/non-discrimination" target="_blank" rel="noopener">Non-Discrimination</a></li>
       </ul>
